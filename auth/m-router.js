@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const db = require("../data/dbConfig");
+const restricted = require("../auth/restricted");
 
-router.get("/", (req, res) => {
+router.get("/", restricted, (req, res) => {
   db("meals")
+    .where({ user_id: req.decodedToken.subject })
     .then(meals => {
       res.status(200).json(meals);
     })
@@ -12,5 +14,7 @@ router.get("/", (req, res) => {
       res.status(500).json({ error: "The meals could not be retrieved." });
     });
 });
+
+
 
 module.exports = router;
