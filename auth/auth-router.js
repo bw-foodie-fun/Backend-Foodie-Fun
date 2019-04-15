@@ -25,11 +25,16 @@ router.post("/register", (req, res) => {
           .then(user => {
             const token = tokenService.generateToken(user);
             res.status(201).json({ user, token });
+          })
+          .catch(error => {
+            res.status(500).json({
+              error: "There was an error while saving the user to the database."
+            });
           });
       })
       .catch(error => {
-        res.status(500).json({
-          error: "There was an error while saving the user to the database."
+        res.status(400).json({
+          error: "This username already exists!"
         });
       });
   }
@@ -53,11 +58,9 @@ router.post("/login", (req, res) => {
             .status(200)
             .json({ message: `${user.username} is logged in.`, token });
         } else {
-          res
-            .status(401)
-            .json({
-              error: "Please provide the correct username and password."
-            });
+          res.status(401).json({
+            error: "Please provide the correct username and password."
+          });
         }
       })
       .catch(error => {
