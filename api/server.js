@@ -11,4 +11,12 @@ middleware(server);
 server.use("/api/auth", authRouter);
 server.use('/api/meals', mealsRouter);
 
+server.get('/', (req, res) => {
+    res.send(`
+      <h2>FOODIE FUN API</h2>
+      <p>Welcome!</p>
+    `);
+  });
+
+
 module.exports = server; 
