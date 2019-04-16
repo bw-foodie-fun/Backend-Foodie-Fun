@@ -72,7 +72,7 @@ router.post("/login", (req, res) => {
 });
 
 // Just testing 
-router.get("/", (req, res) => {
+router.get("/all", (req, res) => {
   db("users")
     .then(users => {
       res.status(200).json(users);
