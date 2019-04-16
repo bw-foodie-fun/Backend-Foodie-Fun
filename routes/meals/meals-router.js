@@ -30,21 +30,5 @@ router.post("/", async (req, res) => {
     }
   });
 
-//   router.post('/all/:id', restricted, checkRole('expat'), async (req, res) => {
-//     try {
-//         const { location, img_url } = req.body;
-//         req.body.user_id = req.params.id;
-//         if (!req.body.user_id || !location || !img_url) {
-//             res.status(400).json({ message: 'Please provide the user_id, location, and img_url for this photo' });
-//         } else {
-//             const photo = req.body
-//             const newPhoto = await Photos.addPhoto(photo);
-//             res.status(201).json(newPhoto);
-//         }
-//     } catch (error) {
-//         res.status(500).json(error);
-//     }
-// });
-
   //Export Router
 module.exports = router;
