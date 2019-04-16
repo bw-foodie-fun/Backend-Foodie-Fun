@@ -15,7 +15,7 @@ router.get("/", restricted, (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", restricted, (req, res) => {
   const { id } = req.params;
 
   db("meals")
@@ -35,6 +35,35 @@ router.get("/:id", (req, res) => {
         error: "The action with the specified ID could not be retrieved"
       });
     });
+});
+
+router.post("/", (req, res) => {
+  const meal = req.body;
+
+  if (!meal.item_name) {
+    res.status(400).json({ error: "Please provide a name for the meal." });
+  } else {
+    // meal.user_id = req.decodedToken.subject;
+    meal.user_id = 3;
+    db("meals")
+      .insert(meal)
+      .then(ids => {
+        const id = ids[0];
+        db("meals")
+          .where({ id })
+          .first()
+          .then(meal => {
+            res.status(201).json(meal);
+          });
+      })
+      .catch(error => {
+        res
+          .status(500)
+          .json({
+            error: "There was an error while saving the meal to the database."
+          });
+      });
+  }
 });
 
 module.exports = router;
