@@ -24,7 +24,7 @@ router.post("/register", (req, res) => {
           .first()
           .then(user => {
             const token = tokenService.generateToken(user);
-            res.status(201).json({ user, token });
+            res.status(201).json({ id: user.id, username: user.username, token });
           })
           .catch(error => {
             res.status(500).json({
