@@ -1,3 +1,13 @@
+
+const localPg = {
+  host: 'localhost',
+  database: 'meals',
+  user: 'sansa',
+  password: 'password',
+};
+const productionDbConnection = process.env.DATABASE_URL || localPg;
+
+
 module.exports = {
 
   development: {
@@ -31,4 +41,14 @@ module.exports = {
       directory: "./data/seeds"
     }
   },
+  production: {
+    client: 'pg',
+    connection: productionDbConnection,
+    migrations: {
+      directory: './data/migrations',
+    },
+    seeds: {
+      directory: './data/seeds',
+    },
+  }
 };
