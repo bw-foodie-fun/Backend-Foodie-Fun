@@ -1,34 +1,33 @@
 const request = require("supertest");
-const server = require("./server.js");
-
-const db = require("../data/dbConfig");
+const db = require("../data/dbConfig.js");
+const server = require("../api/server.js");
 
 afterEach(async () => {
   await db("meals").truncate();
 });
 
+//GLOBAL
 let token;
-let user = {
-  username: "sansa",
-  password: "password"
-}
-beforeAll((done) => {
+
+beforeAll(async done => {
+  await db("users").truncate();
   request(server)
-    .post('/api/auth/login')
+    .post("/api/auth/register")
     .send({
-      username: user.username,
-      password: user.password,
+      username: "user",
+      password: "pw"
     })
-    .end((err, res) => {
-      token = res.body.token; 
+    .end((err, response) => {
+      //RESPONSE LOG IF NEEDED
+      //    console.log(response)
+      token = response.body.token; // save the token!
       done();
     });
 });
 
-
+//TEST SUITES
 describe("server.js", () => {
   describe("GET /api/meals", () => {
-
     it("should set testing enviroment", () => {
       expect(process.env.DB_ENV).toBe("testing");
     });
@@ -49,14 +48,14 @@ describe("server.js", () => {
         });
     });
 
-    // it("should return status code 200 when authorized.", done => {
-    //   return request(server)
-    //     .get("/api/meals")
-    //     .set('Authorization', 'Bearer ' + token)
-    //     .expect(200, done)
-        // .then(res => {
-        //   expect(res.status, done).toBe(200);
-        // });
-    // });
+    it("should return status code 200 when authorized", () => {
+      console.log("TOKEN", token);
+      return request(server)
+        .get("/api/meals")
+        .set("Authorization", `${token}`)
+        .then(response => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
   });
 });
