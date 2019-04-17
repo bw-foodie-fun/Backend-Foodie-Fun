@@ -4,7 +4,7 @@ const server = require("./server.js");
 const db = require("../data/dbConfig");
 const restricted = require("../auth/restricted");
 
-
+ 
 afterEach(async () => {
   await db("meals").truncate();
 });
