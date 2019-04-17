@@ -23,7 +23,7 @@ beforeAll(async done => {
 
 //TEST SUITES
 describe("Server", () => {
-  //ROUTEs SUITE
+  //ROUTES SUITE
   describe("Routes", () => {
     it("GET meals should return JSON", () => {
       return request(server)
