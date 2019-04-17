@@ -32,7 +32,7 @@ describe("server.js", () => {
       expect(process.env.DB_ENV).toBe("testing");
     });
 
-    it("should return JSON", () => {
+    it.only("should return JSON", () => {
       return request(server)
         .get("/api/meals")
         .then(res => {
