@@ -6,6 +6,7 @@ const restricted = require("../../auth/restricted");
 
 router.get("/", restricted, (req, res) => {
   db("meals")
+    .returning("id")
     .where({ user_id: req.decodedToken.subject })
     .then(meals => {
         res.status(200).json(meals)
@@ -17,6 +18,7 @@ router.get("/", restricted, (req, res) => {
 
 router.get("/all", (req, res) => {
   db("meals")
+    .returning("id")
     .then(meals => {
       res.status(200).json(meals);
     })
@@ -30,6 +32,7 @@ router.get("/:id", restricted, (req, res) => {
   const { id } = req.params;
 
   db("meals")
+    .returning("id")
     .where({ id, user_id: req.decodedToken.subject })
     .first()
     .then(meal => {
@@ -56,10 +59,12 @@ router.post("/", restricted, (req, res) => {
   } else {
     meal.user_id = req.decodedToken.subject;
     db("meals")
+      .returning("id")
       .insert(meal)
       .then(ids => {
         const id = ids[0];
         db("meals")
+          .returning("id")
           .where({ id })
           .first()
           .then(meal => {
@@ -84,6 +89,7 @@ router.put("/:id", restricted, (req, res) => {
     });
   } else {
     db("meals")
+      .returning("id")
       .where({ id, user_id: req.decodedToken.subject })
       .update(changes)
       .then(count => {
@@ -107,6 +113,7 @@ router.delete("/:id", restricted, (req, res) => {
   const { id } = req.params;
 
   db("meals")
+    .returning("id")
     .where({ id, user_id: req.decodedToken.subject })
     .del()
     .then(count => {
