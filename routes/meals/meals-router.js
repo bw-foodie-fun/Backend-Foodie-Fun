@@ -8,7 +8,7 @@ router.get("/", restricted, (req, res) => {
   db("meals")
     .where({ user_id: req.decodedToken.subject })
     .then(meals => {
-      res.status(200).json(meals);
+        res.status(200).json(meals)
     })
     .catch(error => {
       res.status(500).json({ error: "The meals could not be retrieved." });

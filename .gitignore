@@ -1,6 +1,8 @@
 node_modules
 
+data/test.db3
 data/meals.db3
+
 
 # Logs
 logs
