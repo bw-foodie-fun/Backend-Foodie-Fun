@@ -89,9 +89,10 @@ router.put("/:id", restricted, (req, res) => {
     });
   } else {
     db("meals")
-      .returning("id")
+    // org
       .where({ id, user_id: req.decodedToken.subject })
       .update(changes)
+      .returning("id")
       .then(count => {
         if (count > 0) {
           res.status(200).json(count);
@@ -113,9 +114,10 @@ router.delete("/:id", restricted, (req, res) => {
   const { id } = req.params;
 
   db("meals")
-    .returning("id")
+  // org
     .where({ id, user_id: req.decodedToken.subject })
     .del()
+    .returning("id")
     .then(count => {
       if (count > 0) {
         res.status(200).json(count);
