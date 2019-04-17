@@ -2,6 +2,10 @@ const request = require("supertest");
 const db = require("../data/dbConfig.js");
 const server = require("../api/server.js");
 
+afterEach(async () => {
+  await db("meals").truncate();
+});
+
 //GLOBAL
 let token;
 
@@ -22,30 +26,35 @@ beforeAll(async done => {
 });
 
 //TEST SUITES
-describe("Server", () => {
-  //ROUTES SUITE
-  describe("Routes", () => {
-    it("GET meals should return JSON", () => {
+describe("server.js", () => {
+  describe("GET /api/meals", () => {
+    it("should set testing enviroment", () => {
+      expect(process.env.DB_ENV).toBe("testing");
+    });
+
+    it("should return JSON", () => {
       return request(server)
         .get("/api/meals")
         .then(res => {
           expect(res.type).toBe("application/json");
         });
     });
-    // token not being sent - should respond with a 401
-    it("GET restricted meals, should return status 401 on get request", async () => {
-      const res = await request(server).get("/api/meals");
-      expect(res.status).toBe(401);
+
+    it("should return status code 401 when not authorized.", () => {
+      return request(server)
+        .get("/api/meals")
+        .then(res => {
+          expect(res.status).toBe(401);
+        });
     });
-    // send the token - should respond with a 200
-    it("GET all restricted meals,It responds with JSON status 200", () => {
+
+    it("should return status code 200 when authorized", () => {
       console.log("TOKEN", token);
       return request(server)
         .get("/api/meals")
         .set("Authorization", `${token}`)
         .then(response => {
           expect(response.statusCode).toBe(200);
-          expect(response.type).toBe("application/json");
         });
     });
   });
