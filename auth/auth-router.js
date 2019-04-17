@@ -17,6 +17,7 @@ router.post("/register", (req, res) => {
     user.password = hash;
     db("users")
       .insert(user)
+      .returning("id")
       .then(ids => {
         const id = ids[0];
         db("users")
@@ -49,6 +50,7 @@ router.post("/login", (req, res) => {
     });
   } else {
     db("users")
+      .returning("id")
       .where({ username })
       .first()
       .then(user => {
