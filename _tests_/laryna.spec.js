@@ -2,11 +2,12 @@ const request = require("supertest");
 const db = require("../data/dbConfig.js");
 const server = require("../api/server.js");
 
-afterEach(async () => {
-  await db("meals").truncate();
-});
+//COMMENT ON/OFF to RESET DB FOR TESTING
+// afterEach( async  ()=> {
+//   await db("meals").truncate();
+// });
 
-//GLOBAL------------------------------------------------------------
+//GLOBAL--------------------------------------------------------------
 let token;
 //POST LOGIN, RECEIVE TOKEN, token used for TESTSs
 beforeAll(async done => {
@@ -25,7 +26,7 @@ beforeAll(async done => {
     });
 });
 
-//TEST SUITES--------------------------------------------------------
+//TEST SUITES-----------------------------------------------------------
 describe("server.js", () => {
   describe("POST/GET users", () => {
     it("should Login with credentials, res 200", async () => {
@@ -40,19 +41,16 @@ describe("server.js", () => {
       expect(response.status).toBe(200);
     });
 
-    it('should get user list, res 200', () => {
+    it("should get user list, res 200", () => {
       return request(server)
-      .get("/api/auth/all")
-      .then(res => {
-        expect(res.status).toBe(200);
-      });
-    })
+        .get("/api/auth/all")
+        .then(res => {
+          expect(res.status).toBe(200);
+        });
+    });
   });
 
   describe("CRUD meals", () => {
-    // it("should set testing enviroment", () => {
-    //   expect(process.env.DB_ENV).toBe("testing");
-    // });
 
     it("GET req, should return JSON", () => {
       return request(server)
@@ -79,15 +77,34 @@ describe("server.js", () => {
           expect(response.statusCode).toBe(200);
         });
     });
-    it('POST req should insert user to the db', async () => {
+    it("POST req, should send meal to the db, then res 201", async () => {
       const testMeal = {
-          item_name: 'test',
+        item_name: "test"
       };
       const response = await request(server)
-      .post("/api/meals")
-      .set("Authorization", `${token}`)
-      .send(testMeal);
-       expect(response.status).toBe(201);
+        .post("/api/meals")
+        .set("Authorization", `${token}`)
+        .send(testMeal);
+      expect(response.status).toBe(201);
+    });
+    it("PUT req, should update. then res 200", async () => {
+      const response = await request(server)
+        .put("/api/meals/1")
+        .send({ item_name: "test2" })
+        .set("Authorization", `${token}`);
+
+      expect(response.status).toBe(200);
+    });
+    it("DELETE req, then res 200", async () => {
+      const response = await request(server)
+        .delete("/api/meals/1")
+        .set("Authorization", `${token}`);
+      expect(response.status).toBe(200);
+    });
   });
-  });
+});
+
+afterAll(async done => {
+  await db("meals").truncate();
+  done();
 });
